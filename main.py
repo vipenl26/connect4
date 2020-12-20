@@ -1,11 +1,18 @@
 import pygame
+import time
+from Check import check
 
-m =  [["0", "0", "0", "0", "0", "0", "0"],
-	  ["0", "0", "0", "0", "0", "0", "0"],
-	  ["0", "0", "0", "0", "0", "0", "0"],
-	  ["0", "0", "0", "0", "0", "0", "0"],
-	  ["0", "0", "0", "0", "0", "0", "0"],
-	  ["0", "0", "0", "0", "0", "0", "0"]]
+board = [["0", "0", "0", "0", "0", "0", "0"],
+	    ["0", "0", "0", "0", "0", "0", "0"],
+	    ["0", "0", "0", "0", "0", "0", "0"],
+	    ["0", "0", "0", "0", "0", "0", "0"],
+	    ["0", "0", "0", "0", "0", "0", "0"],
+	    ["0", "0", "0", "0", "0", "0", "0"]]
+
+swap = {"R": "Y", "Y": "R"}
+turn = "R"
+gameOver = False
+
 
 def draw_grid():
 	pygame.draw.rect(screen, (0,191,255), (0,0,560,480))
@@ -14,21 +21,52 @@ def draw_grid():
 			x = 40 + 80*j
 			y = 40 + 80*i
 			color = (255,255,255)
-			if m[i][j]=="R":
+			if board[i][j]=="R":
 				color = (255, 0, 0)
-			elif m[i][j]=="Y":
+			elif board[i][j]=="Y":
 				color = (255, 255, 0)
 			pygame.draw.circle(screen, color, (x,y), 35)
 
-def draw_coins():
+def win(turn):
+	global gameOver
+	gameOver = True
+	if turn=="R":
+		turn = "Red"
+	else:
+		turn = "Yellow"
+
+	font=pygame.font.SysFont(None,60)#font for setting font size and style
+	screen_text=font.render(turn+' is Winner!!',True,(0,0,0))
+	screen.blit(screen_text,[120,500])
+
+
+def drop_coin_animation(a,b,c):
 	pass
 
-def drop_coin(color, x, y):
-	pass
+
+def drop_coin(color,row):
+    for i in range(5,-1,-1):
+        drop_coin_animation(i,row,color)
+        if board[i][row]=="0":
+            board[i][row]=color
+            break
 
 def click(row):
-	print(row)
-	pass
+	if gameOver:
+		return
+	global turn
+	drop_coin(turn,row)
+
+	if check(board):
+		win(turn)
+	print(check(board))
+
+	turn = swap[turn]
+	
+
+def frame_update():
+	draw_grid()
+	pygame.display.update()
 
 
 pygame.init()
@@ -39,7 +77,7 @@ screen = pygame.display.get_surface()
 screen.fill((255, 255, 255))
 
 
-draw_grid()
+
 
 while 1:
 	for i in pygame.event.get():
@@ -49,4 +87,6 @@ while 1:
 		elif i.type==pygame.MOUSEBUTTONDOWN:
 			row = i.pos[0]//80
 			click(row)
-	pygame.display.update()
+
+		frame_update()
+	
