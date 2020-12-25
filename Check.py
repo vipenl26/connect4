@@ -4,7 +4,7 @@ def check(board):
     #straight combination
 
     for i in range(6):
-        for j in range(3):
+        for j in range(4):
             if(board[i][j]=="R" and board[i][j+1]=="R" and board[i][j+2]=="R" and board[i][j+3]=="R"):
                 return True
             if(board[i][j]=="Y" and board[i][j+1]=="Y" and board[i][j+2]=="Y" and board[i][j+3]=="Y"):
