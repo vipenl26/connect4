@@ -77,6 +77,7 @@ def click(row):
 
 def play(row,onlybot=0):
 	if not onlybot: click(row)
+	frame_update()
 	if bot:
 		row = best_move(deepcopy(board),turn,depth)
 		click(row)
