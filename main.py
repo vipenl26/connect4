@@ -3,6 +3,7 @@ import time
 from Check import check, isDraw
 from bot import best_move
 from copy import deepcopy
+import random
 board = [["0", "0", "0", "0", "0", "0", "0"],
 	    ["0", "0", "0", "0", "0", "0", "0"],
 	    ["0", "0", "0", "0", "0", "0", "0"],
@@ -74,8 +75,8 @@ def click(row):
 	
 	turn = swap[turn]
 
-def play(row):
-	click(row)
+def play(row,onlybot=0):
+	if not onlybot: click(row)
 	if bot:
 		row = best_move(deepcopy(board),turn,depth)
 		click(row)
@@ -93,7 +94,8 @@ pygame.display.set_caption("connect4")
 screen = pygame.display.get_surface()
 screen.fill((255, 255, 255))
 
-
+if random.choice([0,1]):
+	play(None,onlybot=1)
 
 
 while 1:
