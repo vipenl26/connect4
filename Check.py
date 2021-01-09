@@ -39,3 +39,9 @@ def check(board):
 
     return False
 
+def isDraw(board):
+    cnt=0
+    for i in range(7):
+        if board[0][i]!="0":
+            cnt+=1
+    return cnt==7

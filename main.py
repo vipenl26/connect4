@@ -1,7 +1,8 @@
 import pygame
 import time
-from Check import check
-
+from Check import check, isDraw
+from bot import best_move
+from copy import deepcopy
 board = [["0", "0", "0", "0", "0", "0", "0"],
 	    ["0", "0", "0", "0", "0", "0", "0"],
 	    ["0", "0", "0", "0", "0", "0", "0"],
@@ -12,7 +13,8 @@ board = [["0", "0", "0", "0", "0", "0", "0"],
 swap = {"R": "Y", "Y": "R"}
 turn = "R"
 gameOver = False
-
+bot = 1
+depth = 3
 
 def draw_grid():
 	pygame.draw.rect(screen, (0,191,255), (0,0,560,480))
@@ -39,6 +41,13 @@ def win(turn):
 	screen_text=font.render(turn+' is Winner!!',True,(0,0,0))
 	screen.blit(screen_text,[120,500])
 
+def draw():
+	global gameOver
+	gameOver = True
+	font=pygame.font.SysFont(None,60)#font for setting font size and style
+	screen_text=font.render('Draw!!!',True,(0,0,0))
+	screen.blit(screen_text,[120,500])	
+
 
 def drop_coin_animation(a,b,c):
 	pass
@@ -52,16 +61,24 @@ def drop_coin(color,row):
             break
 
 def click(row):
-	if gameOver:
+	if gameOver or board[0][row]!="0":
 		return
 	global turn
 	drop_coin(turn,row)
 
 	if check(board):
 		win(turn)
-	print(check(board))
+	elif isDraw(board):
+		draw()
 
+	
 	turn = swap[turn]
+
+def play(row):
+	click(row)
+	if bot:
+		row = best_move(deepcopy(board),turn,depth)
+		click(row)
 	
 
 def frame_update():
@@ -86,7 +103,7 @@ while 1:
 			exit()
 		elif i.type==pygame.MOUSEBUTTONDOWN:
 			row = i.pos[0]//80
-			click(row)
+			play(row)
 
 		frame_update()
 	
